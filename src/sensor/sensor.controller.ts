@@ -1,50 +1,64 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
   HttpCode,
   HttpStatus,
+  Body,
+  Post,
 } from '@nestjs/common';
 import { SensorService } from './sensor.service';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { Sensor } from './entities/sensor.entity';
 import { CreateSensorDto } from './dto/create-sensor.dto';
-import { UpdateSensorDto } from './dto/update-sensor.dto';
 
+@ApiTags('Sensors')
 @Controller('sensor')
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createSensorDto: CreateSensorDto) {
+  create(@Body() createSensorDto: CreateSensorDto): Promise<Sensor> {
     return this.sensorService.create(createSensorDto);
   }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   findAll() {
     return this.sensorService.findAll();
   }
 
   @Get(':id')
-  getInfo(@Param('id') id: string) {
-    return this.sensorService.findOne(+id);
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  findOne(@Param('id') id: Sensor['id']) {
+    return this.sensorService.findOne(id);
+  }
+
+  @Get(':id/info')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  findOneInfo(@Param('id') id: Sensor['id']) {
+    return this.sensorService.findOneInfo(id);
   }
 
   @Get(':id/data')
-  getData(@Param('id') id: string) {
-    return this.sensorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSensorDto: UpdateSensorDto) {
-    return this.sensorService.update(+id, updateSensorDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.sensorService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  findOneData(@Param('id') id: Sensor['id']) {
+    return this.sensorService.findOneData(id);
   }
 }

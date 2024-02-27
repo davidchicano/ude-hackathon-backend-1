@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'; // Assume similar DTOs for Sensor
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Sensor } from './entities/sensor.entity';
+import { User } from 'src/user/entities/user.entity';
 import { CreateSensorDto } from './dto/create-sensor.dto';
-import { UpdateSensorDto } from './dto/update-sensor.dto';
 
 @Injectable()
 export class SensorService {
-  create(createSensorDto: CreateSensorDto) {
-    return 'This action adds a new sensor';
+  constructor(
+    @InjectRepository(Sensor)
+    private sensorRepository: Repository<Sensor>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
+
+  async create(createSensorDto: CreateSensorDto): Promise<Sensor> {
+    const user = await this.userRepository.findOneBy({
+      id: createSensorDto.userId,
+    });
+    if (!user) {
+      throw new NotFoundException(
+        `User with ID "${createSensorDto.userId}" not found`,
+      );
+    }
+
+    const newSensor = this.sensorRepository.create(createSensorDto);
+    newSensor.user = user; // Associate the sensor with the user
+    return this.sensorRepository.save(newSensor);
   }
 
-  findAll() {
-    return `This action returns all sensor`;
+  async findAll(): Promise<Sensor[]> {
+    return this.sensorRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sensor`;
+  async findOne(id: Sensor['id']): Promise<Sensor> {
+    const sensor = await this.sensorRepository.findOneBy({ id });
+    if (!sensor) {
+      throw new NotFoundException(`Sensor with ID "${id}" not found`);
+    }
+    return sensor;
   }
 
-  update(id: number, updateSensorDto: UpdateSensorDto) {
-    return `This action updates a #${id} sensor`;
+  async findOneInfo(id: Sensor['id']): Promise<any> {
+    // Assuming there's a method to fetch sensor info
+    const sensor = await this.findOne(id); // Reuse the findOne method
+    // Transform or fetch additional info about the sensor as needed
+    return { ...sensor, extraInfo: 'This is extra info' };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} sensor`;
+  async findOneData(id: Sensor['id']): Promise<any> {
+    // Assuming there's a method to fetch sensor data
+    const sensor = await this.findOne(id); // Reuse the findOne method
+    // Transform or fetch data specific to the sensor as needed
+    return { ...sensor, data: 'This is sensor data' };
   }
 }
