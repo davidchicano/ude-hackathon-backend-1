@@ -16,9 +16,9 @@ import { UserModule } from './user/user.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'your_username',
-      password: 'your_password',
-      database: 'your_database',
+      username: 'ude',
+      password: 'secret',
+      database: 'hackathon_db',
       entities: [],
       synchronize: true, // Note: set to false in production
     }),
