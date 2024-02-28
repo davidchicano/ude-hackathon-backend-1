@@ -16,6 +16,7 @@ import { User } from './entities/user.entity';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Family } from 'src/family/entities/family.entity';
 import { Expert } from 'src/expert/entities/expert.entity';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -26,6 +27,12 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.ACCEPTED)
+  login(@Body() loginUserDto: LoginUserDto): Promise<User> {
+    return this.userService.login(loginUserDto);
   }
 
   @Get()

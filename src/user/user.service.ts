@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Family } from 'src/family/entities/family.entity';
 import { Expert } from 'src/expert/entities/expert.entity';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -43,6 +44,21 @@ export class UserService {
 
     const newUser = this.userRepository.create(createUserDto);
     return this.userRepository.save(newUser);
+  }
+
+  async login(loginUserDto: LoginUserDto): Promise<User> {
+    const userObject = await this.userRepository.findOneBy({
+      email: loginUserDto.email,
+    });
+    if (!userObject) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (userObject.password !== loginUserDto.password) {
+      throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
+    }
+
+    return userObject;
   }
 
   async findAll(): Promise<User[]> {
