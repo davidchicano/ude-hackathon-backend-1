@@ -1,8 +1,10 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'family' })
@@ -15,4 +17,8 @@ export class Family {
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
+
+  // Relations
+  @OneToMany(() => User, (user) => user.family)
+  users: User[];
 }

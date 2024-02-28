@@ -40,12 +40,13 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ relations: ['sensors'] });
   }
 
   async findOne(id: User['id']): Promise<User> {
-    const user = await this.userRepository.findOneBy({
-      id,
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['sensors'],
     });
     if (!user) {
       throw new NotFoundException(`User with ID "${id}" not found`);

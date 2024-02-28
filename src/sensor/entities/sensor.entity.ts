@@ -12,7 +12,7 @@ export class Sensor {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('jsonb')
+  @Column({ type: 'jsonb', nullable: true })
   data: any;
 
   @Column({ length: 255, nullable: true })

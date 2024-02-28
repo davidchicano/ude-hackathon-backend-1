@@ -4,10 +4,11 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { Sensor } from 'src/sensor/entities/sensor.entity';
-import { UserFamily } from 'src/entities/user-family.entity';
-import { ExpertUser } from 'src/entities/expert-user.entity';
+import { ExpertUser } from 'src/relations/entities/expert-user.entity';
+import { Family } from 'src/relations/entities/family.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -36,8 +37,8 @@ export class User {
   @OneToMany(() => Sensor, (sensor) => sensor.user)
   sensors: Sensor[];
 
-  @OneToMany(() => UserFamily, (userFamily) => userFamily.user)
-  userFamilies: UserFamily[];
+  @ManyToOne(() => Family, (family) => family.users, { onDelete: 'CASCADE' })
+  family: Family;
 
   @OneToMany(() => ExpertUser, (expertUser) => expertUser.user)
   expertUsers: ExpertUser[];
