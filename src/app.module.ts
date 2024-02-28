@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SensorModule } from './sensor/sensor.module';
 import { ExpertModule } from './expert/expert.module';
@@ -28,7 +26,5 @@ import { FamilyModule } from './family/family.module';
     SensorModule,
     FamilyModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

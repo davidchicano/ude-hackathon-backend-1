@@ -41,33 +41,33 @@ export class SensorController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'id',
+    name: 'phoneNumber',
     type: String,
     required: true,
   })
-  findOne(@Param('id') id: Sensor['id']) {
+  findOne(@Param('id') id: Sensor['phoneNumber']) {
     return this.sensorService.findOne(id);
   }
 
   @Get(':id/info')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'id',
+    name: 'phoneNumber',
     type: String,
     required: true,
   })
-  findOneInfo(@Param('id') id: Sensor['id']) {
+  findOneInfo(@Param('id') id: Sensor['phoneNumber']) {
     return this.sensorService.findOneInfo(id);
   }
 
   @Get(':id/data')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'id',
+    name: 'phoneNumber',
     type: String,
     required: true,
   })
-  findOneData(@Param('id') id: Sensor['id']) {
+  findOneData(@Param('id') id: Sensor['phoneNumber']) {
     return this.sensorService.findOneData(id);
   }
 }

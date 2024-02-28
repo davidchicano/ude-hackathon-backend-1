@@ -1,16 +1,16 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   ManyToOne,
+  PrimaryColumn,
 } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 
 @Entity({ name: 'sensor' })
 export class Sensor {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryColumn()
+  phoneNumber: string;
 
   @Column({ length: 255 })
   type: string;

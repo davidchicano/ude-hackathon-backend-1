@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Sensor } from './entities/sensor.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CreateSensorDto } from './dto/create-sensor.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class SensorService {
@@ -12,6 +13,7 @@ export class SensorService {
     private sensorRepository: Repository<Sensor>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(
@@ -34,22 +36,51 @@ export class SensorService {
     return this.sensorRepository.find();
   }
 
-  async findOne(id: Sensor['id']): Promise<Sensor> {
-    const sensor = await this.sensorRepository.findOneBy({ id });
+  async findOne(id: Sensor['phoneNumber']): Promise<Sensor> {
+    const sensor = await this.sensorRepository.findOneBy({ phoneNumber: id });
     if (!sensor) {
       throw new NotFoundException(`Sensor with ID "${id}" not found`);
     }
     return sensor;
   }
 
-  async findOneInfo(id: Sensor['id']): Promise<any> {
+  async findOneInfo(id: Sensor['phoneNumber']): Promise<any> {
     // Assuming there's a method to fetch sensor info
     const sensor = await this.findOne(id); // Reuse the findOne method
     // Transform or fetch additional info about the sensor as needed
+
+    const options = {
+      method: 'POST',
+      url: 'https://location-retrieval.p-eu.rapidapi.com/retrieve',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-RapidAPI-Key': 'e809606af6msh44fac2dcabcd9d3p1b1015jsn32e30715f609',
+        'X-RapidAPI-Host': 'location-retrieval.nokia.rapidapi.com',
+      },
+      data: {
+        device: {
+          phoneNumber: id,
+        },
+        maxAge: 60,
+      },
+    };
+
+    this.httpService
+      .axiosRef(options)
+      .then((response) => {
+        console.log(response.data.verificationResult);
+        // Depending on the response structure, you might need to adjust this
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log('Received Error');
+        throw error;
+      });
+
     return { ...sensor, extraInfo: 'This is extra info' };
   }
 
-  async findOneData(id: Sensor['id']): Promise<any> {
+  async findOneData(id: Sensor['phoneNumber']): Promise<any> {
     // Assuming there's a method to fetch sensor data
     const sensor = await this.findOne(id); // Reuse the findOne method
     // Transform or fetch data specific to the sensor as needed
