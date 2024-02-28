@@ -1,26 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExpertDto } from './dto/create-expert.dto';
-import { UpdateExpertDto } from './dto/update-expert.dto';
+import { Expert } from './entities/expert.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExpertService {
-  create(createExpertDto: CreateExpertDto) {
-    return 'This action adds a new expert';
+  constructor(
+    @InjectRepository(Expert)
+    private expertRepository: Repository<Expert>,
+  ) {}
+
+  async create(createExpertDto: CreateExpertDto): Promise<Expert> {
+    const newExpert = this.expertRepository.create(createExpertDto);
+    return this.expertRepository.save(newExpert);
   }
 
-  findAll() {
-    return `This action returns all expert`;
+  async findAll(): Promise<Expert[]> {
+    return this.expertRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} expert`;
+  async findOne(id: Expert['id']): Promise<Expert> {
+    const user = await this.expertRepository.findOneBy({
+      id,
+    });
+    if (!user) {
+      throw new NotFoundException(`Expert with ID "${id}" not found`);
+    }
+    return user;
   }
 
-  update(id: number, updateExpertDto: UpdateExpertDto) {
-    return `This action updates a #${id} expert`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} expert`;
+  async delete(id: Expert['id']): Promise<void> {
+    await this.expertRepository.softDelete(id);
   }
 }
