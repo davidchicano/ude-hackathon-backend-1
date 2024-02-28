@@ -16,7 +16,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(User)
+    @InjectRepository(Family)
     private familyRepository: Repository<Family>,
   ) {}
 
@@ -43,13 +43,13 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({ relations: ['sensors'] });
+    return this.userRepository.find();
   }
 
   async findOne(id: User['id']): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['sensors'],
+      relations: ['sensors', 'family', 'experts'],
     });
     if (!user) {
       throw new NotFoundException(`User with ID "${id}" not found`);

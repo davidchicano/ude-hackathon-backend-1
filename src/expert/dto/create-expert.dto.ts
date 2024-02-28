@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length } from 'class-validator';
 
 export class CreateExpertDto {
-  @ApiProperty({ example: 'Alice' })
+  @ApiProperty({ example: 'Amanda' })
   @IsString()
   @IsNotEmpty()
   @Length(1, 255)
   name: string;
 
-  @ApiProperty({ example: 'Smith' })
+  @ApiProperty({ example: 'Lopez' })
   @IsString()
   @IsNotEmpty()
   @Length(1, 255)
@@ -29,9 +29,4 @@ export class CreateExpertDto {
   @IsNotEmpty()
   @Length(1, 255)
   location: string;
-
-  @ApiProperty({ example: 'patient uuid' })
-  @IsString()
-  @Length(1, 255)
-  password: string;
 }
