@@ -15,6 +15,9 @@ export class Sensor {
   @Column({ length: 255 })
   type: string;
 
+  @Column()
+  resourceId: string;
+
   @Column({ type: 'jsonb', nullable: true })
   data: any;
 

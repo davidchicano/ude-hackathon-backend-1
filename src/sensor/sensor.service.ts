@@ -5,6 +5,7 @@ import { Sensor } from './entities/sensor.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CreateSensorDto } from './dto/create-sensor.dto';
 import { HttpService } from '@nestjs/axios';
+import RetrievalResponse from './types/retrieval-response.type';
 
 @Injectable()
 export class SensorService {
@@ -20,13 +21,14 @@ export class SensorService {
     userId: User['id'],
     createSensorDto: CreateSensorDto,
   ): Promise<Sensor> {
+    console.log();
+
     const user = await this.userRepository.findOneBy({
       id: userId,
     });
     if (!user) {
       throw new NotFoundException(`User with ID "${userId}" not found`);
     }
-
     const newSensor = this.sensorRepository.create(createSensorDto);
     newSensor.user = user; // Associate the sensor with the user
     return this.sensorRepository.save(newSensor);
@@ -41,6 +43,7 @@ export class SensorService {
     if (!sensor) {
       throw new NotFoundException(`Sensor with ID "${id}" not found`);
     }
+
     return sensor;
   }
 
@@ -67,23 +70,21 @@ export class SensorService {
 
     this.httpService
       .axiosRef(options)
-      .then((response) => {
-        console.log(response.data.verificationResult);
-        // Depending on the response structure, you might need to adjust this
-        console.log(response.data);
+      .then((response: { data: RetrievalResponse }) => {
+        sensor.data = response.data;
+        this.sensorRepository.save(sensor);
+        return response.data;
       })
       .catch((error) => {
         console.log('Received Error');
         throw error;
       });
-
-    return { ...sensor, extraInfo: 'This is extra info' };
   }
 
   async findOneData(id: Sensor['phoneNumber']): Promise<any> {
     // Assuming there's a method to fetch sensor data
     const sensor = await this.findOne(id); // Reuse the findOne method
-    // Transform or fetch data specific to the sensor as needed
-    return { ...sensor, data: 'This is sensor data' };
+
+    return sensor.data;
   }
 }

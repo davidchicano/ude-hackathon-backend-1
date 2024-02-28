@@ -18,7 +18,7 @@ import { User } from 'src/user/entities/user.entity';
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {}
 
-  @Post(':id')
+  @Post(':userId')
   @HttpCode(HttpStatus.CREATED)
   @ApiParam({
     name: 'userId',
@@ -26,7 +26,7 @@ export class SensorController {
     required: true,
   })
   create(
-    @Param('id') id: User['id'],
+    @Param('userId') id: User['id'],
     @Body() createSensorDto: CreateSensorDto,
   ): Promise<Sensor> {
     return this.sensorService.create(id, createSensorDto);
@@ -41,7 +41,7 @@ export class SensorController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'phoneNumber',
+    name: 'id',
     type: String,
     required: true,
   })
@@ -52,7 +52,7 @@ export class SensorController {
   @Get(':id/info')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'phoneNumber',
+    name: 'id',
     type: String,
     required: true,
   })
@@ -63,7 +63,7 @@ export class SensorController {
   @Get(':id/data')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
-    name: 'phoneNumber',
+    name: 'id',
     type: String,
     required: true,
   })
