@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Sensor } from 'src/sensor/entities/sensor.entity';
-import { ExpertUser } from 'src/relations/entities/expert-user.entity';
-import { Family } from 'src/relations/entities/family.entity';
+import { Family } from 'src/family/entities/family.entity';
+import { Expert } from 'src/expert/entities/expert.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -40,6 +42,7 @@ export class User {
   @ManyToOne(() => Family, (family) => family.users, { onDelete: 'CASCADE' })
   family: Family;
 
-  @OneToMany(() => ExpertUser, (expertUser) => expertUser.user)
-  expertUsers: ExpertUser[];
+  @ManyToMany(() => Expert, (expert) => expert.users)
+  @JoinTable()
+  experts: Expert[];
 }

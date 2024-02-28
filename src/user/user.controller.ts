@@ -14,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { Family } from 'src/family/entities/family.entity';
 
 @ApiTags('Users')
 @Controller('user')
@@ -55,6 +56,25 @@ export class UserController {
     @Body() updateProfileDto: UpdateUserDto,
   ): Promise<User | null> {
     return this.userService.update(id, updateProfileDto);
+  }
+
+  @Patch(':id/family/:familyId')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiParam({
+    name: 'familyId',
+    type: String,
+    required: true,
+  })
+  addFamily(
+    @Param('id') id: User['id'],
+    @Param('familyId') familyId: Family['id'],
+  ): Promise<User | null> {
+    return this.userService.addFamily(id, familyId);
   }
 
   @Delete(':id')

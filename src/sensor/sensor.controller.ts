@@ -11,16 +11,25 @@ import { SensorService } from './sensor.service';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Sensor } from './entities/sensor.entity';
 import { CreateSensorDto } from './dto/create-sensor.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @ApiTags('Sensors')
 @Controller('sensor')
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {}
 
-  @Post()
+  @Post(':id')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createSensorDto: CreateSensorDto): Promise<Sensor> {
-    return this.sensorService.create(createSensorDto);
+  @ApiParam({
+    name: 'userId',
+    type: String,
+    required: true,
+  })
+  create(
+    @Param('id') id: User['id'],
+    @Body() createSensorDto: CreateSensorDto,
+  ): Promise<Sensor> {
+    return this.sensorService.create(id, createSensorDto);
   }
 
   @Get()

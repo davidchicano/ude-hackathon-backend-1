@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length } from 'class-validator';
 
-export class CreateFamily {
+export class CreateFamilyDto {
   @ApiProperty({ example: 'Alice Family' })
   @IsString()
   @IsNotEmpty()

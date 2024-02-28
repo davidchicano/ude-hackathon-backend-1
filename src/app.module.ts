@@ -5,12 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SensorModule } from './sensor/sensor.module';
 import { ExpertModule } from './expert/expert.module';
 import { UserModule } from './user/user.module';
-import { ExpertUser } from './relations/entities/expert-user.entity';
-import { Family } from './relations/entities/family.entity';
-import { UserFamily } from './relations/entities/user-family.entity';
+import { Family } from './family/entities/family.entity';
 import { Sensor } from './sensor/entities/sensor.entity';
 import { User } from './user/entities/user.entity';
 import { Expert } from './expert/entities/expert.entity';
+import { FamilyModule } from './family/family.module';
 
 @Module({
   imports: [
@@ -21,12 +20,13 @@ import { Expert } from './expert/entities/expert.entity';
       username: 'ude',
       password: 'secret',
       database: 'hackathon_db',
-      entities: [User, Expert, Sensor, ExpertUser, UserFamily, Family],
+      entities: [User, Expert, Sensor, Family],
       synchronize: true, // Note: set to false in production
     }),
     UserModule,
     ExpertModule,
     SensorModule,
+    FamilyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

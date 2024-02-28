@@ -9,12 +9,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { Family } from 'src/family/entities/family.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(User)
+    private familyRepository: Repository<Family>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -68,6 +71,35 @@ export class UserService {
 
     const updatedEntity = await this.userRepository.save(
       this.userRepository.create(Object.assign(entity, updateUserDto)),
+    );
+
+    return updatedEntity;
+  }
+
+  async addFamily(
+    id: User['id'],
+    familyId: Family['id'],
+  ): Promise<User | null> {
+    const family = await this.familyRepository.findOneBy({
+      id: familyId,
+    });
+    if (!family) {
+      throw new NotFoundException(`Family with ID "${familyId}" not found`);
+    }
+
+    const entity = await this.userRepository.findOneBy({
+      id,
+    });
+
+    if (!entity) {
+      throw new Error('User not found');
+    }
+
+    const newEntity = entity;
+    newEntity.family = family;
+
+    const updatedEntity = await this.userRepository.save(
+      this.userRepository.create(Object.assign(entity, newEntity)),
     );
 
     return updatedEntity;

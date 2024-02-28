@@ -14,14 +14,15 @@ export class SensorService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createSensorDto: CreateSensorDto): Promise<Sensor> {
+  async create(
+    userId: User['id'],
+    createSensorDto: CreateSensorDto,
+  ): Promise<Sensor> {
     const user = await this.userRepository.findOneBy({
-      id: createSensorDto.userId,
+      id: userId,
     });
     if (!user) {
-      throw new NotFoundException(
-        `User with ID "${createSensorDto.userId}" not found`,
-      );
+      throw new NotFoundException(`User with ID "${userId}" not found`);
     }
 
     const newSensor = this.sensorRepository.create(createSensorDto);

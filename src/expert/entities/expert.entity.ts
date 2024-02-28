@@ -3,9 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  OneToMany,
+  ManyToMany,
 } from 'typeorm';
-import { ExpertUser } from 'src/relations/entities/expert-user.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity({ name: 'expert' })
 export class Expert {
@@ -31,6 +31,6 @@ export class Expert {
   createdAt: Date;
 
   // Relations
-  @OneToMany(() => ExpertUser, (expertUser) => expertUser.expert)
-  expertUsers: ExpertUser[];
+  @ManyToMany(() => User, (user) => user.experts)
+  users: User[];
 }
