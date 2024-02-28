@@ -79,6 +79,8 @@ export class SensorService {
         console.log('Received Error');
         throw error;
       });
+
+    return sensor.data;
   }
 
   async findOneData(id: Sensor['phoneNumber']): Promise<any> {
