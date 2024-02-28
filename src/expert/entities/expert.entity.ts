@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ExpertUser } from 'src/entities/expert-user.entity';
+import { ExpertUser } from 'src/relations/entities/expert-user.entity';
 
 @Entity({ name: 'expert' })
 export class Expert {
