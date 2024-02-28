@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Family } from 'src/family/entities/family.entity';
+import { Expert } from 'src/expert/entities/expert.entity';
 
 @ApiTags('Users')
 @Controller('user')
@@ -75,6 +76,25 @@ export class UserController {
     @Param('familyId') familyId: Family['id'],
   ): Promise<User | null> {
     return this.userService.addFamily(id, familyId);
+  }
+
+  @Patch(':id/expert/:expertId')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiParam({
+    name: 'expertId',
+    type: String,
+    required: true,
+  })
+  addExpert(
+    @Param('id') id: User['id'],
+    @Param('expertId') expertId: Expert['id'],
+  ): Promise<User | null> {
+    return this.userService.addExpert(id, expertId);
   }
 
   @Delete(':id')

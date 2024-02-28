@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Family } from 'src/family/entities/family.entity';
+import { Expert } from 'src/expert/entities/expert.entity';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,8 @@ export class UserService {
     private userRepository: Repository<User>,
     @InjectRepository(Family)
     private familyRepository: Repository<Family>,
+    @InjectRepository(Expert)
+    private expertRepository: Repository<Expert>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -103,6 +106,33 @@ export class UserService {
     );
 
     return updatedEntity;
+  }
+
+  async addExpert(
+    id: User['id'],
+    expertId: Expert['id'],
+  ): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['experts'], // Load current experts to avoid overriding them
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    const expert = await this.expertRepository.findOneBy({ id: expertId });
+    if (!expert) {
+      throw new NotFoundException(`Expert with ID "${expertId}" not found`);
+    }
+
+    // Check if the user already has this expert to avoid duplicates
+    const alreadyHasExpert = user.experts.some((exp) => exp.id === expert.id);
+    if (!alreadyHasExpert) {
+      user.experts.push(expert);
+      await this.userRepository.save(user);
+    }
+
+    return user;
   }
 
   async delete(id: User['id']): Promise<void> {
